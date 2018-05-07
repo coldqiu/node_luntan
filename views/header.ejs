@@ -1,0 +1,44 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">-->
+                <!--<span class="sr-only">Toggle navigation</span>-->
+                <!--<span class="icon-bar"></span>-->
+                <!--<span class="icon-bar"></span>-->
+                <!--<span class="icon-bar"></span>-->
+            <!--</button>-->
+            <div class="row">
+                <li <%if(active == "index") {%> class="active" <%}%>><a class="navbar-brand" href="/">全部说说</a></li>
+                <% if(login) {%>
+                <li <%if(active == "allshuoshuo") {%> class="active" <%}%>><a class="navbar-brand" href="/user/<%=username%>">我的说说</a></li>
+                <%}%>
+
+                <li <%if(active == "alluser") {%> class="active" <%}%>><a class="navbar-brand" href="/userlist">成员列表</a></li>
+
+            </div>
+
+        </div>
+        <% if(!login) { %>
+        <ul class="nav navbar-nav navbar-right">
+            <li <%if(active == "login") {%> class="active" <%}%>><a href="/login">登录</a></li>
+            <li <%if(active == "regist") {%> class="active" <%}%>><a href="/regist">注册</a></li>
+        </ul>
+        <% }else {%>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="">Welcome <%= username %></a></li>
+            <li <%if(active == "setavatar") {%> class="active" <%}%>><a href="/setavatar">设置头像</a></li>
+
+        </ul>
+        <% } %>
+    </div>
+</nav>
+
+<style>
+    .row li {
+        display: inline-block;
+    }
+    .active a{
+        font-weight: 700;
+        background: #000000;
+    }
+</style>

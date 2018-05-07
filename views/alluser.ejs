@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>所有成员</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+<% include header.ejs %>
+
+<div class="jumbotron">
+
+</div>
+
+<div class="container">
+    <div class="row">
+        <h2>所有成员--列表</h2>
+    </div>
+
+    <hr>
+
+    <div class="">
+        <% for(var i = 0; i < result.length; i++) {%>
+            <% for(var i = 0; i< result.length; i++) {%>
+                  <a class="navbar-brand" href="/user/<%=result[i].username%>">
+                      <div class="col-lg-4">
+                          <img style="width:100px;" src="/avatar/<%=result[i].avatar%>" alt="">
+                          <p> <%=result[i].username%></p>
+                      </div>
+                  </a>
+             <% } %>
+        <% } %>
+    </div>
+    <footer>
+        <p>&copy; 2018 Hello </p>
+    </footer>
+</div> <!-- /container -->
+
+
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.js"></script>
+
+
+
+</body>
+</html>

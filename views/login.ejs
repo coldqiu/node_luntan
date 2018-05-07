@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>班级说说--注册</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Custom styles for this template -->
+    <!--<link href="jumbotron.css" rel="stylesheet">-->
+
+    <style>
+        #chenggong, #shibai, #mimaError {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<% include header.ejs %>
+
+<div class="jumbotron">
+    <div class="container">
+        <h2>Hello, world!</h2>
+        <p>This is a template for a simple marketing or informational website. It includes a largembotent. Use g more unique.</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+        <form>
+            <div class="form-group">
+                <label for="username">Email address</label>
+                <input type="text"  id="username" class="form-control" placeholder="用户名（数字、字母、下划线）">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="密码（6~12位）">
+            </div>
+            <button type="button" id="zhuce" class="btn btn-default">Submit</button>
+        </form>
+        <div id="chenggong" class="alert alert-success" role="alert">
+            <a href="#" class="alert-link">注册成功，将自动跳转至首页</a>
+        </div>
+        <div id="shibai" class="alert alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Warning!</strong> 用户名不存在！
+        </div>
+        <div id="mimaError" class="alert alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Warning!</strong> 密码错误！
+        </div>
+
+    <hr>
+
+    <footer>
+        <p>&copy; 2018 Hello </p>
+    </footer>
+</div> <!-- /container -->
+
+</div>
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.js"></script>
+<script>
+    $("#zhuce").click(function() {
+        //递交表单
+        $.post("/dologin", {
+            "username": $("#username").val(),
+            "password": $("#password").val()
+        }, function(result) {
+            if(result == "1") {
+                // 成功
+//                $("#chenggong").fadeIn()
+                alert("登录成功，将跳转至首页 ")
+                window.location = "/";
+            }else if(result == "-1") {
+
+                $("#shibai").fadeIn();
+            }else if(result == "-2") {
+
+                $("#mimaError").fadeIn();
+            }
+        })
+    });
+
+</script>
+
+</body>
+</html>

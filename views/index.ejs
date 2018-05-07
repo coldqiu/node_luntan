@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>班级说说</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Custom styles for this template -->
+    <!--<link href="jumbotron.css" rel="stylesheet">-->
+
+    <style>
+        .jumbotron {
+            padding-top: 80px;
+        }
+        #shuoshuo {
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+
+<% include header.ejs %>
+
+<div class="jumbotron">
+    <% if(!login) {%>
+    <!--未登录显示-->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-offset-2">
+                <h1>Hello!</h1>
+                <p>班级说说 是一个交流空间</p>
+                <a href="/regist" class="btn btn-primary btn-lg" role="button">注册</a>
+            </div>
+            <div class="col-lg-6">
+                <h3>已有帐号登录</h3>
+                <form>
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text"  id="username" class="form-control" placeholder="用户名（数字、字母、下划线）">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" class="form-control" id="password" placeholder="密码（6~12位）">
+                    </div>
+                    <button type="button" id="denglu" class="btn btn-default">Submit</button>
+                </form>
+                <div id="chenggong" class="alert alert-success" role="alert" style="display: none" >
+                    <a href="/regist" class="alert-link">注册成功，将自动跳转至首页</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% }else { %>
+    <!--登陆显示-->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-1">
+                <a href="/setavatar"><img src="/avatar/<%= avatar %>" alt=""></a>
+            </div>
+            <div class="col-lg-6 col-lg-offset-1">
+                <p><%=username %></p>
+                <textarea id="contenta" cols="55" rows="5"></textarea>
+                <button id="fabiao" type="button" class="btn btn-primary">发表说说</button>
+            </div>
+            <div id="shibai" class="alert alert-success" role="alert" style="display: none" >
+                <a href="#" class="alert-link">发表失败</a>
+            </div>
+        </div>
+
+    </div>
+    <% } %>
+</div>
+
+<div class="container">
+
+    <nav>
+        <ul class="pagination">
+
+        </ul>
+    </nav>
+   <div id="shuoshuo"></div>
+    <hr>
+
+    <footer>
+        <p>&copy; 2018 Hello </p>
+    </footer>
+</div> <!-- /container -->
+
+
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/underscore-change.js-min.js"></script>
+<script>
+    $("#denglu").click(function() {
+        //递交表单
+        $.post("/dologin", {
+            "username": $("#username").val(),
+            "password": $("#password").val()
+        }, function(result) {
+            if(result == "1") {
+                window.location = "/";
+            }else if(result == "-1") {
+
+                $("#shibai").fadeIn();
+            }else if(result == "-2") {
+
+                $("#mimaError").fadeIn();
+            }
+        })
+    });
+
+    // 点击发表按钮触发
+    $("#fabiao").click(function() {
+        $.post("/post", {
+            "content": $("#contenta").val()
+        }, function(result) {
+           if(result == "1") {
+               alert("success");
+               window.location = "/";
+           }else if(result == "-3") {
+               $("#shibai").fadeIn();
+           }
+
+        });
+    });
+
+</script>
+<script type="text/template" id="moban">
+    <div class="col-md-4">
+        <h2><img style=width:100px; src="/avatar/{{=avatar}} " alt="">{{=username}}说：</h2>
+        <p>{{=content}}</p>
+        <p>{{=datetime}}</p>
+        <p><a href="">查看详情</a></p>
+    </div>
+</script>
+<script type="text/javascript">
+    // 分页
+    $.get("/getshuoshuoamount", function(result) {
+        var amount = parseInt(result.count);
+        pageamount = Math.ceil(amount / 6);
+        for(var i = 0; i < pageamount; i++) {
+            $(".pagination").append("<li><a href='javascript:void(0);'>" + i + "</a></li>");
+        }
+        $(".pagination li:first").addClass("active");
+        // 监听
+        $(".pagination li").click(function() {
+            var page = $(this).index();
+            console.log("page:", page);
+
+            getPage(page);
+            $(this).addClass("active").siblings().removeClass("active");
+        });
+
+    });
+</script>
+<script type="text/javascript">
+    var $shuoshuo = $("#shuoshuo");
+    //得到模板
+    var compiled = _.template($("#moban").html());
+
+    getPage(0);
+    function getPage(page) {
+        $("#shuoshuo").html("");
+        $.ajax({
+            "url": "/getallshuoshuo?page=" + page,
+            "type": "get",
+            "success": function(result) {
+                //            console.log("result:", result);
+                iterator(0);
+                function iterator(i) {
+                    if(i == result.result.length) {
+                        return; // 停止迭代
+                    }
+                    //console.log("result:", result.result[i].username);
+                    $.get("/getuserinfo?username=" + result.result[i].username, function(result2) {
+                        //console.log("result2:", result2);
+                        // 修改字典，给字典result加一项
+                        result.result[i].avatar = result2.avatar;
+
+                        // 组装模板
+                        var htmlstring = compiled(result.result[i]);
+                        // 添加dom
+                        $("#shuoshuo").append($(htmlstring));
+                        iterator(i + 1);
+                    });
+                };
+            }
+        });
+    }
+
+
+</script>
+
+</body>
+</html>
